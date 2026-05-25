@@ -1,24 +1,6 @@
-import { Mail, MapPin, Send, Linkedin, Github } from 'lucide-react';
-import { useState } from 'react';
-import { useToast } from '@/hooks/use-toast';
+import { Mail, MapPin, Linkedin, Github } from 'lucide-react';
 
 const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: '',
-  });
-  const { toast } = useToast();
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // For now, just show a toast - can be connected to backend later
-    toast({
-      title: "Message sent!",
-      description: "Thanks for reaching out. I'll get back to you soon.",
-    });
-    setFormData({ name: '', email: '', message: '' });
-  };
 
   const contactInfo = [
     {
@@ -43,9 +25,7 @@ const Contact = () => {
           <span className="text-secondary">curl</span> --contact
         </h2>
 
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* Contact Info */}
-          <div className="space-y-6">
+        <div className="space-y-6">
             <div className="terminal-window">
               <div className="terminal-header">
                 <div className="terminal-dot terminal-dot-red" />
@@ -113,62 +93,6 @@ const Contact = () => {
                 </span> */}
               </div>
             </div>
-          </div>
-
-          {/* Contact Form */}
-          <div className="terminal-window">
-            <div className="terminal-header">
-              <div className="terminal-dot terminal-dot-red" />
-              <div className="terminal-dot terminal-dot-yellow" />
-              <div className="terminal-dot terminal-dot-green" />
-              <span className="ml-4 text-muted-foreground text-sm">send-message.sh</span>
-            </div>
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm text-muted-foreground mb-2">
-                  <span className="text-secondary">$</span> NAME=
-                </label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  required
-                  className="w-full bg-muted border border-border rounded-lg px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
-                  placeholder="Your name"
-                />
-              </div>
-              <div>
-                <label className="block text-sm text-muted-foreground mb-2">
-                  <span className="text-secondary">$</span> EMAIL=
-                </label>
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  required
-                  className="w-full bg-muted border border-border rounded-lg px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
-                  placeholder="your@email.com"
-                />
-              </div>
-              <div>
-                <label className="block text-sm text-muted-foreground mb-2">
-                  <span className="text-secondary">$</span> MESSAGE=
-                </label>
-                <textarea
-                  value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  required
-                  rows={4}
-                  className="w-full bg-muted border border-border rounded-lg px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all resize-none"
-                  placeholder="Your message..."
-                />
-              </div>
-              <button type="submit" className="btn-terminal w-full justify-center">
-                <Send className="w-4 h-4" />
-                <span>$ ./send-message.sh</span>
-              </button>
-            </form>
-          </div>
         </div>
       </div>
     </section>
