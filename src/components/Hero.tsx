@@ -1,4 +1,4 @@
-import { ArrowDown, MapPin, Mail, Phone } from 'lucide-react';
+import { ArrowDown, MapPin, Mail } from 'lucide-react';
 import TypingEffect from './TypingEffect';
 import profileImage from '@/assets/profile.jpg';
 
@@ -53,10 +53,7 @@ const Hero = () => {
                       torawane.umesh@gmail.com
                     </a>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-secondary" />
-                    <span className="text-muted-foreground">+45 52 69 91 21</span>
-                  </div>
+
                 </div>
 
                 <div className="pt-6 flex flex-wrap gap-4">
