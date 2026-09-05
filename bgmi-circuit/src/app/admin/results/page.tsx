@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from 'react';
 import { Save, Plus, Trash2, Calculator } from 'lucide-react';
 import { calculateMatchPoints, DEFAULT_POINTS_SYSTEM } from '@/lib/points';
