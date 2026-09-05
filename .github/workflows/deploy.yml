@@ -34,21 +34,19 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd bgmi-circuit
           npm install
 
       - name: Build with Next.js
         run: |
-          cd bgmi-circuit
           npm run build
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          NEXT_PUBLIC_BASE_PATH: /bgmi-circuit
+          NEXT_PUBLIC_BASE_PATH: /TheSoloMade
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'bgmi-circuit/out'
+          path: 'out'
 
   deploy:
     environment:
