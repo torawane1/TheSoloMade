@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: 'export',
-  basePath: '/bgmi-circuit',
+  basePath: '/TheSoloMade/bgmi-circuit',
   images: {
     unoptimized: true,
   },
