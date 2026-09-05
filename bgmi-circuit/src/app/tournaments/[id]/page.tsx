@@ -1,25 +1,42 @@
 import React from 'react';
 import { Trophy, Calendar, Map, Award, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
+import { prisma } from '@/lib/prisma';
 
-export default function TournamentDetailPage({ params }: { params: { id: string } }) {
-  // Mock data for UI - will be integrated with Prisma
-  const tournament = {
-    name: 'BGMI Pro Series 2026',
-    organizer: 'Krafton',
-    tier: 'S',
-    status: 'LIVE',
-    prizePool: '₹1,00,00,000',
-    startDate: '2026-09-01',
-    region: 'India',
-  };
+export async function generateStaticParams() {
+  const tournaments = await prisma.tournament.findMany({
+    select: { id: true },
+  });
 
-  const standings = [
-    { rank: 1, team: 'Soul', totalPoints: 145, killPoints: 60, placePoints: 85 },
-    { rank: 2, team: 'godL', totalPoints: 130, killPoints: 55, placePoints: 75 },
-    { rank: 3, team: 'Entity Gaming', totalPoints: 110, killPoints: 40, placePoints: 70 },
-    { rank: 4, team: 'Global Esports', totalPoints: 95, killPoints: 35, placePoints: 60 },
-  ];
+  return tournaments.map((t) => ({
+    id: t.id,
+  }));
+}
+
+export default async function TournamentDetailPage({ params }: { params: { id: string } }) {
+  const { id } = params;
+
+  const tournament = await prisma.tournament.findUnique({
+    where: { id },
+    include: {
+      participations: {
+        orderBy: { totalPoints: 'desc' },
+        include: { org: true }
+      }
+    }
+  });
+
+  if (!tournament) {
+    return <div className="min-h-screen bg-zinc-950 text-white flex items-center justify-center">Tournament not found</div>;
+  }
+
+  const standings = tournament.participations.map((p, index) => ({
+    rank: index + 1,
+    team: p.org.name,
+    totalPoints: p.totalPoints,
+    killPoints: p.totalKills,
+    placePoints: p.totalPoints - p.totalKills,
+  }));
 
   const matches = [
     { id: 'm1', map: 'Erangel', date: '2026-09-01', result: 'Completed' },
@@ -41,7 +58,7 @@ export default function TournamentDetailPage({ params }: { params: { id: string 
                   {tournament.tier}-Tier
                 </span>
                 <span className="flex items-center gap-1 text-zinc-400 text-xs uppercase font-bold">
-                  <Calendar className="w-3 h-3" /> {tournament.startDate}
+                  <Calendar className="w-3 h-3" /> {tournament.startDate.toDateString()}
                 </span>
                 <span className="flex items-center gap-1 text-green-500 text-xs uppercase font-bold animate-pulse">
                   <span className="w-2 h-2 bg-green-500 rounded-full"></span> {tournament.status}
@@ -52,11 +69,11 @@ export default function TournamentDetailPage({ params }: { params: { id: string 
               </h1>
               <div className="flex flex-wrap gap-6 text-zinc-400 font-medium">
                 <div className="flex items-center gap-2">
-                  <Trophy className="w-5 h-5 text-yellow-500" /> 
-                  <span>Prize Pool: <span className="text-white font-bold">{tournament.prizePool}</span></span>
+                  <Trophy className="w-5 h-5 text-yellow-500" />
+                  <span>Prize Pool: <span className="text-white font-bold">{tournament.prizePool || 'TBD'}</span></span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Award className="w-5 h-5 text-yellow-500" /> 
+                  <Award className="w-5 h-5 text-yellow-500" />
                   <span>Organizer: <span className="text-white font-bold">{tournament.organizer}</span></span>
                 </div>
               </div>
@@ -111,7 +128,7 @@ export default function TournamentDetailPage({ params }: { params: { id: string 
           <h2 className="text-3xl font-bold uppercase italic flex items-center gap-3">
             <Calendar className="text-yellow-500" /> Schedule
           </h2>
-          
+
           <div className="space-y-4">
             {matches.map((match) => (
               <div key={match.id} className="bg-zinc-900 border border-zinc-800 p-4 rounded-xl hover:border-yellow-500/50 transition-all group cursor-pointer">
@@ -120,7 +137,7 @@ export default function TournamentDetailPage({ params }: { params: { id: string 
                     <Map className="w-3 h-3" /> {match.map}
                   </div>
                   <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded ${
-                    match.result === 'Live' ? 'bg-green-500 text-black animate-pulse' : 
+                    match.result === 'Live' ? 'bg-green-500 text-black animate-pulse' :
                     match.result === 'Completed' ? 'bg-zinc-700 text-zinc-300' : 'bg-zinc-800 text-zinc-500'
                   }`}>
                     {match.result}
