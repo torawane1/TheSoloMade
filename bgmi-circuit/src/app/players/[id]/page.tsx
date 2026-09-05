@@ -1,47 +1,26 @@
 import React from 'react';
 import { User, Trophy, Target, TrendingUp, History, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
-import { prisma } from '@/lib/prisma';
 
-export async function generateStaticParams() {
-  const players = await prisma.player.findMany({
-    select: { id: true },
-  });
-
-  return players.map((player) => ({
-    id: player.id,
-  }));
-}
-
-export default async function PlayerProfilePage({ params }: { params: { id: string } }) {
-  const { id } = params;
-  
-  // In a real static export, we fetch the data at build time
-  const player = await prisma.player.findUnique({
-    where: { id },
-    include: {
-      currentTeam: true,
-    }
-  });
-
-  if (!player) {
-    return <div className="min-h-screen bg-zinc-950 text-white flex items-center justify-center">Player not found</div>;
-  }
-
-  // Mapping Prisma data to the UI model
-  const playerData = {
-    ign: player.ign,
-    realName: player.realName || 'Unknown',
-    role: player.role,
-    team: player.currentTeam?.name || 'Free Agent',
-    nationality: player.nationality,
+export default function PlayerProfilePage({ params }: { params: { id: string } }) {
+  // Static Mock data for Frontend Phase
+  const player = {
+    ign: params.id || 'Jonathan',
+    realName: 'Jonathan Amaral',
+    role: 'ASSAULTER',
+    team: 'Soul',
+    nationality: 'India',
     stats: {
-      totalKills: player.totalKills,
-      totalDamage: player.totalDamage,
-      totalMVPs: player.totalMVPs,
-      kda: player.kda,
+      totalKills: 452,
+      totalDamage: 125400,
+      totalMVPs: 12,
+      kda: 4.2,
     },
-    recentMatches: [], // This would be fetched via a separate include or query
+    recentMatches: [
+      { tournament: 'BPS 2026', map: 'Erangel', kills: 6, damage: 1200, mvp: true },
+      { tournament: 'BPS 2026', map: 'Miramar', kills: 3, damage: 800, mvp: false },
+      { tournament: 'BPS 2026', map: 'Sanhok', kills: 8, damage: 1500, mvp: true },
+    ]
   };
 
   return (
@@ -51,26 +30,26 @@ export default async function PlayerProfilePage({ params }: { params: { id: stri
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-8">
           <div className="relative">
             <div className="w-32 h-32 rounded-full bg-zinc-800 border-4 border-yellow-500 overflow-hidden shadow-2xl">
-              <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${playerData.ign}`} alt={playerData.ign} />
+              <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${player.ign}`} alt={player.ign} />
             </div>
             <div className="absolute -bottom-2 -right-2 bg-yellow-500 text-black text-xs font-black px-2 py-1 rounded uppercase">
-              {playerData.role}
+              {player.role}
             </div>
           </div>
 
           <div className="text-center md:text-left">
             <h1 className="text-5xl font-black uppercase italic tracking-tighter mb-2">
-              {playerData.ign}
+              {player.ign}
             </h1>
             <div className="flex flex-wrap justify-center md:justify-start gap-4 text-zinc-400">
               <span className="flex items-center gap-1">
-                <Trophy className="w-4 h-4 text-yellow-500" /> {playerData.team}
+                <Trophy className="w-4 h-4 text-yellow-500" /> {player.team}
               </span>
               <span className="flex items-center gap-1">
-                <User className="w-4 h-4 text-yellow-500" /> {playerData.realName}
+                <User className="w-4 h-4 text-yellow-500" /> {player.realName}
               </span>
               <span className="flex items-center gap-1">
-                <ExternalLink className="w-4 h-4 text-yellow-500" /> {playerData.nationality}
+                <ExternalLink className="w-4 h-4 text-yellow-500" /> {player.nationality}
               </span>
             </div>
           </div>
@@ -86,19 +65,19 @@ export default async function PlayerProfilePage({ params }: { params: { id: stri
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-zinc-900 border border-zinc-800 p-6 rounded-2xl text-center">
               <div className="text-zinc-500 text-xs font-bold uppercase mb-1">Total Kills</div>
-              <div className="text-3xl font-black text-white">{playerData.stats.totalKills}</div>
+              <div className="text-3xl font-black text-white">{player.stats.totalKills}</div>
             </div>
             <div className="bg-zinc-900 border border-zinc-800 p-6 rounded-2xl text-center">
               <div className="text-zinc-500 text-xs font-bold uppercase mb-1">Total Damage</div>
-              <div className="text-3xl font-black text-white">{playerData.stats.totalDamage.toLocaleString()}</div>
+              <div className="text-3xl font-black text-white">{player.stats.totalDamage.toLocaleString()}</div>
             </div>
             <div className="bg-zinc-900 border border-zinc-800 p-6 rounded-2xl text-center">
               <div className="text-zinc-500 text-xs font-bold uppercase mb-1">MVPs</div>
-              <div className="text-3xl font-black text-yellow-500">{playerData.stats.totalMVPs}</div>
+              <div className="text-3xl font-black text-yellow-500">{player.stats.totalMVPs}</div>
             </div>
             <div className="bg-zinc-900 border border-zinc-800 p-6 rounded-2xl text-center">
               <div className="text-zinc-500 text-xs font-bold uppercase mb-1">Avg KDA</div>
-              <div className="text-3xl font-black text-white">{playerData.stats.kda}</div>
+              <div className="text-3xl font-black text-white">{player.stats.kda}</div>
             </div>
           </div>
         </div>
@@ -120,27 +99,21 @@ export default async function PlayerProfilePage({ params }: { params: { id: stri
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-800">
-                {playerData.recentMatches.length === 0 ? (
-                  <tr>
-                    <td colSpan={5} className="px-6 py-8 text-center text-zinc-500 italic">No recent match data available</td>
+                {player.recentMatches.map((match, i) => (
+                  <tr key={i} className="hover:bg-zinc-800/30 transition-colors">
+                    <td className="px-6 py-4 font-bold">{match.tournament}</td>
+                    <td className="px-6 py-4 text-zinc-400">{match.map}</td>
+                    <td className="px-6 py-4 text-center font-bold text-white">{match.kills}</td>
+                    <td className="px-6 py-4 text-center text-zinc-400">{match.damage}</td>
+                    <td className="px-6 py-4 text-center">
+                      {match.mvp ? (
+                        <span className="px-2 py-1 bg-yellow-500 text-black text-[10px] font-black rounded uppercase">Yes</span>
+                      ) : (
+                        <span className="text-zinc-600 text-xs">—</span>
+                      )}
+                    </td>
                   </tr>
-                ) : (
-                  playerData.recentMatches.map((match, i) => (
-                    <tr key={i} className="hover:bg-zinc-800/30 transition-colors">
-                      <td className="px-6 py-4 font-bold">{match.tournament}</td>
-                      <td className="px-6 py-4 text-zinc-400">{match.map}</td>
-                      <td className="px-6 py-4 text-center font-bold text-white">{match.kills}</td>
-                      <td className="px-6 py-4 text-center text-zinc-400">{match.damage}</td>
-                      <td className="px-6 py-4 text-center">
-                        {match.mvp ? (
-                          <span className="px-2 py-1 bg-yellow-500 text-black text-[10px] font-black rounded uppercase">Yes</span>
-                        ) : (
-                          <span className="text-zinc-600 text-xs">—</span>
-                        )}
-                      </td>
-                    </tr>
-                  ))
-                )}
+                ))}
               </tbody>
             </table>
           </div>

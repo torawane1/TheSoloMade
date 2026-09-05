@@ -1,42 +1,25 @@
 import React from 'react';
 import { Trophy, Calendar, Map, Award, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
-import { prisma } from '@/lib/prisma';
 
-export async function generateStaticParams() {
-  const tournaments = await prisma.tournament.findMany({
-    select: { id: true },
-  });
+export default function TournamentDetailPage({ params }: { params: { id: string } }) {
+  // Static Mock data for Frontend Phase
+  const tournament = {
+    name: 'BGMI Pro Series 2026',
+    organizer: 'Krafton',
+    tier: 'S',
+    status: 'LIVE',
+    prizePool: '₹1,00,00,000',
+    startDate: '2026-09-01',
+    region: 'India',
+  };
 
-  return tournaments.map((t) => ({
-    id: t.id,
-  }));
-}
-
-export default async function TournamentDetailPage({ params }: { params: { id: string } }) {
-  const { id } = params;
-
-  const tournament = await prisma.tournament.findUnique({
-    where: { id },
-    include: {
-      participations: {
-        orderBy: { totalPoints: 'desc' },
-        include: { org: true }
-      }
-    }
-  });
-
-  if (!tournament) {
-    return <div className="min-h-screen bg-zinc-950 text-white flex items-center justify-center">Tournament not found</div>;
-  }
-
-  const standings = tournament.participations.map((p, index) => ({
-    rank: index + 1,
-    team: p.org.name,
-    totalPoints: p.totalPoints,
-    killPoints: p.totalKills,
-    placePoints: p.totalPoints - p.totalKills,
-  }));
+  const standings = [
+    { rank: 1, team: 'Soul', totalPoints: 145, killPoints: 60, placePoints: 85 },
+    { rank: 2, team: 'godL', totalPoints: 130, killPoints: 55, placePoints: 75 },
+    { rank: 3, team: 'Entity Gaming', totalPoints: 110, killPoints: 40, placePoints: 70 },
+    { rank: 4, team: 'Global Esports', totalPoints: 95, killPoints: 35, placePoints: 60 },
+  ];
 
   const matches = [
     { id: 'm1', map: 'Erangel', date: '2026-09-01', result: 'Completed' },
@@ -58,7 +41,7 @@ export default async function TournamentDetailPage({ params }: { params: { id: s
                   {tournament.tier}-Tier
                 </span>
                 <span className="flex items-center gap-1 text-zinc-400 text-xs uppercase font-bold">
-                  <Calendar className="w-3 h-3" /> {tournament.startDate.toDateString()}
+                  <Calendar className="w-3 h-3" /> {tournament.startDate}
                 </span>
                 <span className="flex items-center gap-1 text-green-500 text-xs uppercase font-bold animate-pulse">
                   <span className="w-2 h-2 bg-green-500 rounded-full"></span> {tournament.status}
@@ -70,7 +53,7 @@ export default async function TournamentDetailPage({ params }: { params: { id: s
               <div className="flex flex-wrap gap-6 text-zinc-400 font-medium">
                 <div className="flex items-center gap-2">
                   <Trophy className="w-5 h-5 text-yellow-500" />
-                  <span>Prize Pool: <span className="text-white font-bold">{tournament.prizePool || 'TBD'}</span></span>
+                  <span>Prize Pool: <span className="text-white font-bold">{tournament.prizePool}</span></span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Award className="w-5 h-5 text-yellow-500" />
