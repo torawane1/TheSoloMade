@@ -2,6 +2,14 @@ import React from 'react';
 import { Trophy, Calendar, Map, Award, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 
+export async function generateStaticParams() {
+  // Return a few sample IDs so Next.js can build these pages statically
+  return [
+    { id: 'bgmi-pro-series-2026' },
+    { id: 'bgmi-masters' },
+  ];
+}
+
 export default function TournamentDetailPage({ params }: { params: { id: string } }) {
   // Static Mock data for Frontend Phase
   const tournament = {

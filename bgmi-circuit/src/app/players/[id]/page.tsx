@@ -2,6 +2,15 @@ import React from 'react';
 import { User, Trophy, Target, TrendingUp, History, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 
+export async function generateStaticParams() {
+  // Return a few sample IDs so Next.js can build these pages statically
+  return [
+    { id: 'jonathan' },
+    { id: 'zuxxy' },
+    { id: 'mortal' },
+  ];
+}
+
 export default function PlayerProfilePage({ params }: { params: { id: string } }) {
   // Static Mock data for Frontend Phase
   const player = {
