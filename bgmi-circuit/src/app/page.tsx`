@@ -1,0 +1,192 @@
+import React from 'react';
+import { Trophy, User, TrendingUp, Zap, ArrowRight, Flame } from 'lucide-react';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { MOCK_DATA } from '@/lib/constants';
+
+export default function HomePage() {
+  return (
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 font-sans overflow-x-hidden">
+      {/* Dynamic Hero Section */}
+      <section className="relative h-screen flex items-center justify-center overflow-hidden bg-zinc-950">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-gradient-to-b from-yellow-500/10 via-transparent to-zinc-950"></div>
+          <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
+          <motion.div 
+            initial={{ opacity: 0, scale: 1.2 }}
+            animate={{ opacity: 0.3, scale: 1 }}
+            transition={{ duration: 2 }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-yellow-500/20 blur-[120px] rounded-full"
+          ></motion.div>
+        </div>
+
+        <div className="relative z-10 text-center px-4 max-w-5xl">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-yellow-500 text-xs font-bold uppercase tracking-widest mb-6">
+              <Flame className="w-3 h-3 animate-pulse" /> The Pulse of BGMI Esports
+            </div>
+            <h1 className="text-7xl md:text-9xl font-black tracking-tighter italic uppercase text-transparent bg-clip-text bg-gradient-to-br from-white via-zinc-200 to-zinc-500 mb-6 leading-none">
+              BGMI <br /> <span className="text-yellow-500">CIRCUIT</span>
+            </h1>
+            <p className="text-zinc-400 text-lg md:text-2xl max-w-3xl mx-auto mb-10 font-medium leading-relaxed">
+              Advanced analytics, real-time standings, and comprehensive player profiles. 
+              Experience the competitive ecosystem like never before.
+            </p>
+            <div className="flex flex-wrap justify-center gap-6">
+              <Link href="/tournaments" className="group relative px-8 py-4 bg-yellow-500 text-black font-black uppercase tracking-wider transition-all hover:scale-105 active:scale-95">
+                <span className="relative z-10 flex items-center gap-2">
+                  Explore Circuit <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </span>
+              </Link>
+              <Link href="/leaderboards" className="px-8 py-4 bg-zinc-900 text-white font-black uppercase tracking-wider border border-zinc-800 hover:bg-zinc-800 transition-all">
+                Global Rankings
+              </Link>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Bento Grid Dashboard */}
+      <main className="max-w-7xl mx-auto px-4 py-24">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+          
+          {/* Featured Tournament - Large Card */}
+          <motion.div 
+            whileHover={{ y: -5 }}
+            className="md:col-span-8 group relative overflow-hidden rounded-3xl bg-zinc-900 border border-zinc-800 p-8 hover:border-yellow-500/50 transition-all shadow-2xl"
+          >
+            <div className="absolute top-0 right-0 p-6">
+              <div className="flex items-center gap-2 text-green-500 font-black text-xs uppercase animate-pulse">
+                <span className="w-2 h-2 bg-green-500 rounded-full"></span> Live Now
+              </div>
+            </div>
+            <div className="relative z-10">
+              <span className="px-3 py-1 bg-yellow-500 text-black text-xs font-black uppercase rounded-full mb-4 inline-block">S-Tier Event</span>
+              <h2 className="text-4xl font-black uppercase italic mb-2">BGIS 2024 Grand Finals</h2>
+              <p className="text-zinc-400 mb-8 max-w-md">The ultimate battle for the crown. Top 16 teams fighting for a ₹2 Crore prize pool.</p>
+              <div className="flex items-center gap-8 mb-8">
+                <div>
+                  <div className="text-zinc-500 text-xs uppercase font-bold mb-1">Prize Pool</div>
+                  <div className="text-2xl font-black text-white">₹2,00,00,000</div>
+                </div>
+                <div className="w-px h-10 bg-zinc-800"></div>
+                <div>
+                  <div className="text-zinc-500 text-xs uppercase font-bold mb-1">Format</div>
+                  <div className="text-2xl font-black text-white">League</div>
+                </div>
+              </div>
+              <Link href="/tournaments/bgis-2024" className="inline-flex items-center gap-2 text-yellow-500 font-bold hover:underline group">
+                View Live Standings <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
+            <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-yellow-500/10 blur-3xl rounded-full"></div>
+          </motion.div>
+
+          {/* Top Players - Side Card */}
+          <motion.div 
+            whileHover={{ y: -5 }}
+            className="md:col-span-4 rounded-3xl bg-zinc-900 border border-zinc-800 overflow-hidden shadow-2xl"
+          >
+            <div className="p-6 border-b border-zinc-800 bg-zinc-800/30 flex items-center justify-between">
+              <h3 className="font-black uppercase italic flex items-center gap-2">
+                <User className="text-yellow-500 w-5 h-5" /> Top Form
+              </h3>
+              <Link href="/leaderboards" className="text-[10px] text-zinc-500 hover:text-yellow-500 uppercase font-bold transition-colors">Full List</Link>
+            </div>
+            <div className="p-4 space-y-3">
+              {MOCK_DATA.players.map((player, i) => (
+                <div key={player.id} className="p-3 flex items-center justify-between bg-zinc-800/40 rounded-xl border border-transparent hover:border-yellow-500/30 transition-all cursor-pointer group">
+                  <div className="flex items-center gap-3">
+                    <span className="text-zinc-600 font-mono font-bold text-xs">{i + 1}</span>
+                    <div className="font-bold group-hover:text-yellow-500 transition-colors">{player.ign}</div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xs font-black text-yellow-500">{player.stats.kda} KDA</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Global Stats - Small Card */}
+          <motion.div 
+            whileHover={{ y: -5 }}
+            className="md:col-span-4 rounded-3xl bg-zinc-900 border border-zinc-800 p-6 hover:border-yellow-500/50 transition-all shadow-xl"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <TrendingUp className="text-yellow-500 w-6 h-6" />
+              <h3 className="font-black uppercase italic">Market Pulse</h3>
+            </div>
+            <div className="space-y-4">
+              <div className="flex justify-between items-end">
+                <span className="text-zinc-500 text-sm">Avg Kills/Match</span>
+                <span className="text-2xl font-black text-white">8.4</span>
+              </div>
+              <div className="w-full h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                <div className="w-[70%] h-full bg-yellow-500"></div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* News Feed - Middle Card */}
+          <motion.div 
+            whileHover={{ y: -5 }}
+            className="md:col-span-5 rounded-3xl bg-zinc-900 border border-zinc-800 p-6 hover:border-yellow-500/50 transition-all shadow-xl"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <Zap className="text-yellow-500 w-6 h-6" />
+              <h3 className="font-black uppercase italic">Circuit News</h3>
+            </div>
+            <div className="space-y-4">
+              {[
+                { title: 'Soul shake up roster for BGIS Finals', time: '2h ago' },
+                { title: 'Jonathan breaks fragging record in Erangel', time: '5h ago' },
+                { title: 'New points system implemented for BMPS', time: '1d ago' },
+              ].map((news, i) => (
+                <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-zinc-800/30 hover:bg-zinc-800/60 transition-colors cursor-pointer group">
+                  <span className="text-sm font-medium group-hover:text-yellow-500 transition-colors">{news.title}</span>
+                  <span className="text-[10px] text-zinc-600 font-bold uppercase">{news.time}</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Quick Links - Small Card */}
+          <motion.div 
+            whileHover={{ y: -5 }}
+            className="md:col-span-3 rounded-3xl bg-gradient-to-br from-yellow-500 to-orange-600 p-6 text-black shadow-xl"
+          >
+            <h3 className="font-black uppercase italic mb-4">Quick Access</h3>
+            <div className="space-y-3">
+              <Link href="/leaderboards" className="block p-3 rounded-xl bg-black/10 hover:bg-black/20 transition-colors font-bold text-sm flex items-center justify-between">
+                Rankings <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link href="/tournaments" className="block p-3 rounded-xl bg-black/10 hover:bg-black/20 transition-colors font-bold text-sm flex items-center justify-between">
+                Events <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </motion.div>
+
+        </div>
+      </main>
+
+      <footer className="border-t border-zinc-900 bg-zinc-950 py-16 px-4 text-center">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-3xl font-black italic uppercase mb-4 tracking-tighter">BGMI CIRCUIT</div>
+          <p className="text-zinc-500 text-sm mb-8 max-w-md mx-auto">
+            The definitive data hub for BGMI Esports. Built for the community, by the community.
+          </p>
+          <div className="flex justify-center gap-8 text-zinc-500 text-xs font-bold uppercase tracking-widest">
+            <Link href="/about" className="hover:text-yellow-500 transition-colors">About</Link>
+            <Link href="/terms" className="hover:text-yellow-500 transition-colors">Terms</Link>
+            <Link href="/privacy" className="hover:text-yellow-500 transition-colors">Privacy</Link>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
